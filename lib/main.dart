@@ -128,12 +128,7 @@ class _MainScreenState extends State<MainScreen> {
               children: const [
                 DpadPanel(),
                 Expanded(
-                  child: Stack(
-                    children: [
-                      VideoViewer(),
-                      ControlOverlay(),
-                    ],
-                  ),
+                  child: Stack(children: [VideoViewer(), ControlOverlay()]),
                 ),
                 ActionButtonsPanel(),
               ],

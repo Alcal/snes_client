@@ -67,8 +67,7 @@ class ControlOverlay extends StatelessWidget {
   Widget _buildPlayerSelector(BuildContext context, GameProvider gameProvider) {
     final isPlayer1 = gameProvider.selectedPlayer == 0;
 
-    return GestureDetector(
-      onTap: () => gameProvider.setSelectedPlayer(isPlayer1 ? 1 : 0),
+    return IgnorePointer(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
         decoration: BoxDecoration(

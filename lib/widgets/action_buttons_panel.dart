@@ -8,16 +8,14 @@ class ActionButtonsPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gameProvider = Provider.of<GameProvider>(context);
-    
+
     return Container(
       width: 200,
       color: const Color(0xFF2a2a2a),
       padding: const EdgeInsets.all(16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildActionButtons(context, gameProvider),
-        ],
+        children: [_buildActionButtons(context, gameProvider)],
       ),
     );
   }
@@ -45,11 +43,25 @@ class ActionButtonsPanel extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(right: 8),
-              child: _buildButton(context, gameProvider, 'b', 'B', Colors.red, 70),
+              child: _buildButton(
+                context,
+                gameProvider,
+                'b',
+                'B',
+                Colors.red,
+                70,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8),
-              child: _buildButton(context, gameProvider, 'a', 'A', Colors.green, 70),
+              child: _buildButton(
+                context,
+                gameProvider,
+                'a',
+                'A',
+                Colors.green,
+                70,
+              ),
             ),
           ],
         ),
@@ -58,9 +70,23 @@ class ActionButtonsPanel extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildButton(context, gameProvider, 'select', 'Select', Colors.grey, 55),
+            _buildButton(
+              context,
+              gameProvider,
+              'select',
+              'Select',
+              Colors.grey,
+              55,
+            ),
             const SizedBox(width: 12),
-            _buildButton(context, gameProvider, 'start', 'Start', Colors.grey, 55),
+            _buildButton(
+              context,
+              gameProvider,
+              'start',
+              'Start',
+              Colors.grey,
+              55,
+            ),
           ],
         ),
       ],
@@ -76,7 +102,7 @@ class ActionButtonsPanel extends StatelessWidget {
     double size,
   ) {
     final isPressed = gameProvider.buttons[buttonName] == true;
-    
+
     return GestureDetector(
       onTapDown: (_) => gameProvider.pressButton(buttonName),
       onTapUp: (_) => gameProvider.releaseButton(buttonName),
@@ -85,8 +111,8 @@ class ActionButtonsPanel extends StatelessWidget {
         width: size,
         height: size,
         decoration: BoxDecoration(
-          color: isPressed 
-              ? buttonColor.withOpacity(0.3) 
+          color: isPressed
+              ? buttonColor.withOpacity(0.3)
               : buttonColor.withOpacity(0.7),
           border: Border.all(
             color: isPressed ? Colors.white : buttonColor,
@@ -125,7 +151,7 @@ class ActionButtonsPanel extends StatelessWidget {
     Color buttonColor,
   ) {
     final isPressed = gameProvider.buttons[buttonName] == true;
-    
+
     return GestureDetector(
       onTapDown: (_) => gameProvider.pressButton(buttonName),
       onTapUp: (_) => gameProvider.releaseButton(buttonName),
@@ -134,8 +160,8 @@ class ActionButtonsPanel extends StatelessWidget {
         width: 80,
         height: 50,
         decoration: BoxDecoration(
-          color: isPressed 
-              ? buttonColor.withOpacity(0.3) 
+          color: isPressed
+              ? buttonColor.withOpacity(0.3)
               : buttonColor.withOpacity(0.7),
           border: Border.all(
             color: isPressed ? Colors.white : buttonColor,
@@ -166,4 +192,3 @@ class ActionButtonsPanel extends StatelessWidget {
     );
   }
 }
-

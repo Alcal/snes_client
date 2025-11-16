@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/foundation.dart';
 import '../models/control_message.dart';
 import '../providers/connection_provider.dart';
@@ -5,7 +6,7 @@ import '../providers/connection_provider.dart';
 class GameProvider with ChangeNotifier {
   final ConnectionProvider _connectionProvider;
 
-  int _selectedPlayer = 0;
+  int _selectedPlayer;
   final Map<String, bool> _buttons = {};
   bool _audioEnabled = false;
   int _frameCount = 0;
@@ -17,7 +18,8 @@ class GameProvider with ChangeNotifier {
   bool get audioEnabled => _audioEnabled;
   int get fps => _fps;
 
-  GameProvider(this._connectionProvider);
+  GameProvider(this._connectionProvider)
+    : _selectedPlayer = Random().nextInt(2);
 
   void setSelectedPlayer(int player) {
     _selectedPlayer = player;

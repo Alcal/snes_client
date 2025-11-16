@@ -26,7 +26,10 @@ class _VideoViewerState extends State<VideoViewer> {
   }
 
   void _listenToVideoStream() {
-    final connectionProvider = Provider.of<ConnectionProvider>(context, listen: false);
+    final connectionProvider = Provider.of<ConnectionProvider>(
+      context,
+      listen: false,
+    );
     connectionProvider.webSocketService.videoStream.listen((frame) {
       _updateFrame(frame);
     });
@@ -51,25 +54,21 @@ class _VideoViewerState extends State<VideoViewer> {
 
     // Create UI Image
     final completer = Completer<ui.Image>();
-    ui.decodeImageFromPixels(
-      rgbaData,
-      width,
-      height,
-      ui.PixelFormat.rgba8888,
-      (ui.Image image) {
-        completer.complete(image);
-      },
-    );
+    ui.decodeImageFromPixels(rgbaData, width, height, ui.PixelFormat.rgba8888, (
+      ui.Image image,
+    ) {
+      completer.complete(image);
+    });
 
     final image = await completer.future;
-    
+
     if (mounted) {
       setState(() {
         _currentFrame = image;
         _width = width;
         _height = height;
       });
-      
+
       // Update FPS
       Provider.of<GameProvider>(context, listen: false).updateFps();
     }
@@ -110,4 +109,3 @@ class VideoPainter extends CustomPainter {
   @override
   bool shouldRepaint(VideoPainter oldDelegate) => oldDelegate.image != image;
 }
-

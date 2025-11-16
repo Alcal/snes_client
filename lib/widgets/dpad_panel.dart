@@ -8,7 +8,7 @@ class DpadPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gameProvider = Provider.of<GameProvider>(context);
-    
+
     return Container(
       width: 200,
       color: const Color(0xFF2a2a2a),
@@ -49,7 +49,7 @@ class DpadPanel extends StatelessWidget {
     String label,
   ) {
     final isPressed = gameProvider.buttons[buttonName] == true;
-    
+
     return GestureDetector(
       onTapDown: (_) => gameProvider.pressButton(buttonName),
       onTapUp: (_) => gameProvider.releaseButton(buttonName),
@@ -69,10 +69,7 @@ class DpadPanel extends StatelessWidget {
         child: Center(
           child: Text(
             label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 28,
-            ),
+            style: const TextStyle(color: Colors.white, fontSize: 28),
           ),
         ),
       ),
@@ -87,7 +84,7 @@ class DpadPanel extends StatelessWidget {
     Color buttonColor,
   ) {
     final isPressed = gameProvider.buttons[buttonName] == true;
-    
+
     return GestureDetector(
       onTapDown: (_) => gameProvider.pressButton(buttonName),
       onTapUp: (_) => gameProvider.releaseButton(buttonName),
@@ -96,8 +93,8 @@ class DpadPanel extends StatelessWidget {
         width: 80,
         height: 50,
         decoration: BoxDecoration(
-          color: isPressed 
-              ? buttonColor.withOpacity(0.3) 
+          color: isPressed
+              ? buttonColor.withOpacity(0.3)
               : buttonColor.withOpacity(0.7),
           border: Border.all(
             color: isPressed ? Colors.white : buttonColor,
@@ -128,4 +125,3 @@ class DpadPanel extends StatelessWidget {
     );
   }
 }
-
