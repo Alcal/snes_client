@@ -1,17 +1,10 @@
-import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:dart_amqp/dart_amqp.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class RabbitMQService {
   Client? _client;
   Channel? _channel;
-  Consumer? _consumer;
-
-  final _messageController = StreamController<Map<String, dynamic>>.broadcast();
-
-  Stream<Map<String, dynamic>> get messageStream => _messageController.stream;
 
   bool _isConnected = false;
   bool get isConnected => _isConnected;
@@ -20,6 +13,9 @@ class RabbitMQService {
     if (_isConnected) return;
 
     try {
+      // Clean up existing connection if any
+      await disconnect();
+
       _client = Client(
         settings: ConnectionSettings(
           host: dotenv.env['CLOUDAMQP_HOST'] ?? 'localhost',
@@ -33,50 +29,6 @@ class RabbitMQService {
       );
 
       _channel = await _client!.channel();
-
-      // Declare exchange
-      final exchange = await _channel!.exchange(
-        'control_exchange',
-        ExchangeType.TOPIC,
-        durable: true,
-      );
-
-      // Declare queue
-      final queue = await _channel!.queue('control_queue');
-
-      // Bind queue to exchange
-      await queue.bind(exchange, 'control');
-
-      // Create consumer
-      _consumer = await queue.consume();
-
-      _consumer!.listen((message) {
-        try {
-          final payload = message.payload;
-
-          if (payload == null) {
-            message.ack();
-            return;
-          }
-
-          final String content;
-          if (payload is String) {
-            content = payload as String;
-          } else if (payload is List<int>) {
-            content = utf8.decode(payload);
-          }
-
-          if (content.isNotEmpty) {
-            final data = jsonDecode(content) as Map<String, dynamic>;
-            _messageController.add(data);
-          }
-
-          // Acknowledge message
-          message.ack();
-        } catch (e) {
-          message.ack(); // Acknowledge even on error to prevent message buildup
-        }
-      });
 
       _isConnected = true;
     } catch (e) {
@@ -109,17 +61,21 @@ class RabbitMQService {
 
   Future<void> disconnect() async {
     try {
-      await _consumer?.cancel();
+      // Close channel
       await _channel?.close();
+      _channel = null;
+
+      // Close client
       await _client?.close();
+      _client = null;
     } catch (e) {
       // Ignore errors during disconnect
+      print('Error during RabbitMQ disconnect: $e');
     }
     _isConnected = false;
   }
 
   void dispose() {
     disconnect();
-    _messageController.close();
   }
 }

@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'providers/connection_provider.dart';
 import 'providers/game_provider.dart';
 import 'widgets/video_viewer.dart';
-import 'widgets/controller_panel.dart';
+import 'widgets/dpad_panel.dart';
+import 'widgets/action_buttons_panel.dart';
+import 'widgets/control_overlay.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,7 +65,24 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+    // Force landscape orientation
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
     _connect();
+  }
+
+  @override
+  void dispose() {
+    // Allow all orientations when disposing
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    super.dispose();
   }
 
   Future<void> _connect() async {
@@ -102,45 +122,20 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('🎮 Snes9x Flutter Client'),
-        actions: [
-          Consumer<ConnectionProvider>(
-            builder: (context, provider, _) {
-              return Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 12,
-                      height: 12,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: provider.isControlConnected
-                            ? Colors.green
-                            : Colors.red,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      provider.isControlConnected
-                          ? 'Connected'
-                          : 'Disconnected',
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
-      ),
       body: _isConnecting
           ? const Center(child: CircularProgressIndicator())
           : Row(
               children: const [
-                Expanded(child: VideoViewer()),
-                ControllerPanel(),
+                DpadPanel(),
+                Expanded(
+                  child: Stack(
+                    children: [
+                      VideoViewer(),
+                      ControlOverlay(),
+                    ],
+                  ),
+                ),
+                ActionButtonsPanel(),
               ],
             ),
     );

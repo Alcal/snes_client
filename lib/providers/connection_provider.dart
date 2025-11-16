@@ -38,14 +38,6 @@ class ConnectionProvider with ChangeNotifier {
     try {
       await _rabbitMQService.connect();
       _isRabbitMQConnected = _rabbitMQService.isConnected;
-
-      // Listen to RabbitMQ messages
-      _rabbitMQService.messageStream.listen((message) {
-        // Handle incoming RabbitMQ messages
-        print('Received RabbitMQ message: $message');
-        // You can forward these to the WebSocket service if needed
-        // or handle them directly here
-      });
     } catch (e) {
       print('Failed to connect to RabbitMQ: $e');
       _isRabbitMQConnected = false;
